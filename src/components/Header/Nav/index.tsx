@@ -1,24 +1,40 @@
-import { FunctionComponent } from "react";
-
-import { Box, Link as MuiLink, Typography } from "@mui/material";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import { Box, ClickAwayListener, Link as MuiLink, Modal, Typography } from "@mui/material";
 import Link from "next/link";
+import { FunctionComponent, MouseEventHandler, useState } from "react";
 
-const Nav: FunctionComponent = () => {
+interface IProps {
+  headerHeight: number;
+}
+const Nav: FunctionComponent<IProps> = ({ headerHeight }) => {
   // ~~~~~ Redux state ~~~~~
 
   // ~~~~~ Hooks ~~~~~
 
   // ~~~~~ Cmp state ~~~~~
+  const [isProductsModalOpen, setIsProductsModalOpen] = useState(false);
+  const [isCommunityDropdownOpen, setIsCommunityDropdownOpen] = useState(false);
 
   // ~~~~~ Refs ~~~~~
 
   // ~~~~~ Effects ~~~~~
 
   // ~~~~~ Handlers ~~~~~
+  const closeProductsModal = () => {
+    setIsProductsModalOpen(false);
+  };
+  const toggleProductsModal: MouseEventHandler<HTMLDivElement> = (e) => {
+    e.stopPropagation();
+
+    setIsProductsModalOpen((prev) => !prev);
+  };
 
   return (
     <Box component={"nav"} display={"flex"} alignItems={"center"} gap={2}>
-      <Typography variant="navbar-item">products</Typography>
+      <Box onClick={toggleProductsModal} display={"flex"} alignItems={"center"}>
+        <Typography variant="navbar-item">products</Typography>
+        <ArrowDropDownIcon />
+      </Box>
       <Link passHref href={"/pricing"}>
         <MuiLink>
           <Typography variant="navbar-item">pricing</Typography>
@@ -40,6 +56,13 @@ const Nav: FunctionComponent = () => {
           <Typography variant="navbar-item">contact</Typography>
         </MuiLink>
       </Link>
+      <ClickAwayListener onClickAway={closeProductsModal}>
+        <Modal onClose={closeProductsModal} open={isProductsModalOpen}>
+          <Box position={"absolute"} width={"100%"} top={`${headerHeight}px`}>
+            Modal
+          </Box>
+        </Modal>
+      </ClickAwayListener>
     </Box>
   );
 };
